@@ -26,7 +26,7 @@
 console.clear();
 const key = require('./.gitignore')
 const fetch = require("node-fetch");
-console.log(`${key}`)
+// console.log(`${key}`)
 
 var url =
   "http://newsapi.org/v2/top-headlines?" +
