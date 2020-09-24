@@ -1,0 +1,4 @@
+let key = '8c715e8a95cb4fe0abbbcf7463ecf1b5';
+
+
+module.exports = key;
