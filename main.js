@@ -24,23 +24,112 @@
 // Read the docs to find out how to use. Pretty intuitive.
 
 console.clear();
-const key = require('./.gitignore')
+const key = require('./key')
+// const key = "8c715e8a95cb4fe0abbbcf7463ecf1b5";
 const fetch = require("node-fetch");
 // console.log(`${key}`)
 
-var url =
-  "http://newsapi.org/v2/top-headlines?" +
-  "country=us&" +
-  `apiKey=${key}`;
-//   var req = new Request(url);
-fetch(url).then((response) =>
-  // console.log(response.json());
-  response.json()
-).then((data)=>{
-    console.log(data.articles.slice(0,3));
-    
-    
+let currentDate = new Date().toISOString().split("T")[0];
+
+
+const readline = require("readline");
+
+const rl = readline.createInterface({
+  input: process.stdin,
+  output: process.stdout,
+  prompt: "Search by> ",
 });
+
+let display = `\nToday is ${currentDate} \n\nTo search by a category, type any of the following category\n\n'business', 'entertainment', 'general', 'health',\n 'science', 'sports', 'technology'.\n\nTo search by a keyword, type any word.\n\n`;
+
+let cat = [  "business",  "entertainment",  "general",  "health",  "science",  "sports",  "technology",];
+
+
+
+
+
+let userInteraction = (userInput) => {//////////function.............
+  let category = "";
+  let url = "";
+  let word1 = '';
+  
+  category += cat.filter((item) => userInput === item)[0]; //since the filter return an array with one value ..it's in index 0 n only index..
+
+  // if (userInput !== category){}
+
+  
+  let urlCategory = `https://newsapi.org/v2/top-headlines?country=us&category=${category}&apiKey=${key}`;
+  let urlByKeyWord =  `https://newsapi.org/v2/everything?q=${word1}&from=2020-09-25&to=${currentDate}&sortBy=popularity&apiKey=${key}` ;
+
+
+  url = urlCategory;
+  console.clear();
+  if (userInput === "exit") {
+    rl.close();
+  }else{
+
+
+
+
+  fetch(url)
+    .then((response) => response.json())
+    .then((data) => {
+      let myData = data.articles;
+      
+      
+      if (userInput !== "exit" && userInput === category) {
+        console.log(`\nThese are the ${category} news.`);
+
+        myData.forEach(({ source: { name }, author, description: desc, content, url }, i) => {
+            if (i <= 2 && desc) {
+              console.log(`\n\n${name}\nauthor :${author}\n${content}\n\n`);
+              console.log("----------------------------------------------------");
+            }
+          }
+        );
+
+        rl.question(display, userInteraction);
+      }
+      if (userInput !== category){
+        return myData;
+      }
+
+      
+    })
+
+    // .then((myData)=>{
+    //   if (userInput !== category){
+    //     word1 = userInput;
+    //     url =  `https://newsapi.org/v2/everything?q=${word1}&from=2020-09-25&to=${currentDate}&sortBy=popularity&apiKey=${key}` ;
+
+    //     myData.forEach(({ source: { name }, author, description: desc, content, url }, i) => {
+    //       if (i <= 2 && desc) {
+    //         console.log(`\n\n${name}\nauthor :${author}\n${content}\n\n`);
+    //         console.log("----------------------------------------------------");
+    //       }
+    //     }
+    //   );
+
+    //   rl.question(display, userInteraction);
+    //   }
+      
+    // });
+
+  }
+};
+
+// rl.question(`If you want all "Technology" news type: hi there?\n`,(answer) => {
+//     // to read the word typed into command line
+//     // TODO: Log the answer in a database
+//     console.log(`Thank you for your valuable feedback: ${answer}`);
+//     rl.close();
+//   }
+// );
+// rl.on("close", () => {
+//   console.log("correct answer");
+// });
+
+rl.question(display, userInteraction);
 
 // fetch(url)
 // .then((data) => data.json())

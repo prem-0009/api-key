@@ -1,4 +1,3 @@
-let key = '8098080';
+key.js
 
 
-module.exports = key;
